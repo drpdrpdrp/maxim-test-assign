@@ -23,6 +23,9 @@ class Program
             case 2:
                 RunTask2();
                 break;
+            case 3:
+                RunTask3();
+                break;
 
             default:
                 Console.WriteLine("=== Запуск всех тестов ===");
@@ -51,6 +54,20 @@ class Program
         string input = Console.ReadLine() ?? "";
 
         string result = Task2.ProcessString(input, out bool isValid);
+
+        if (isValid)
+            Console.WriteLine($"Обработанная строка: {result}");
+        else
+            Console.WriteLine(result);
+    }
+    static void RunTask3()
+    {
+        Console.WriteLine("=== Задача 3: Обработка строк с ограничениями и подсчетом символов ===");
+
+        Console.WriteLine("Введите строку:");
+        string input = Console.ReadLine() ?? "";
+
+        string result = Task3.ProcessString(input, out bool isValid);
 
         if (isValid)
             Console.WriteLine($"Обработанная строка: {result}");

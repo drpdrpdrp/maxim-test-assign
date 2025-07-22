@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-public static class Task2
+//Добавить в программу из «Задания 2» дополнительный функционал. Помимо обработанной строки, необходимо также возвращать пользователю информацию о том, сколько раз повторялся каждый символ в обработанной строке.
+public static class Task3
 {
     /// <summary>
     /// Обрабатывает строку в зависимости от её длины.
@@ -20,20 +20,38 @@ public static class Task2
                 
 
         string invalidSymbols = "";
+        string lowercaseLettersString = "abcdefghijklmnopqrstuvwxyz";
+        var lettersCount = lowercaseLettersString.ToDictionary(c => c, c => 0);
         for (int i = 0; i < input.Length; i++)
         {
-            string lowercaseLettersString = "abcdefghijklmnopqrstuvwxyz";
             if(!lowercaseLettersString.Contains(input[i]))
-                {
-                    invalidSymbols += input[i];
-                    isValid = false;
-                }
+            {
+                invalidSymbols += input[i];
+                isValid = false;
+            }
+            else
+            {
+                lettersCount[input[i]] += 1;
+            }
+
         }
 
         if (!isValid)
             return $"Некорректный ввод. Неподходящие символы:  {invalidSymbols}";
 
-        return Task1.ProcessString(input);
+
+
+        string processedString = Task1.ProcessString(input);
+        string validSymbolsCountString = "\n";
+        for (int i = 0; i < lettersCount.Count; i++)
+        {
+            var curChar = lowercaseLettersString[i];
+            var curCharCount = lettersCount[curChar];
+            if (curCharCount != 0)
+                validSymbolsCountString += $"Символов {curChar} в обработанной строке: {curCharCount}\n";
+        }
+        processedString += validSymbolsCountString;
+        return processedString;
     }
     public static void RunTests()
     {
