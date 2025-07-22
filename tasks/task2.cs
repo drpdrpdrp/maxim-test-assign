@@ -1,47 +1,50 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
-public static class Task1
+public static class Task2
 {
         /// <summary>
         /// Обрабатывает строку в зависимости от её длины.
         /// Если длина строки чётная, разделяет её пополам и переворачивает каждую половину.
         /// Если длина строки нечётная, возвращает перевёрнутую строку + исходную строку.
+        /// В строку могут входить только символы латинского алфавита в нижнем регистре.
         /// </summary>
         /// <param name="input">Входная строка для обработки</param>
         /// <returns>Обработанная строка согласно правилам</returns>
-    public static string ProcessString(string input)
+    public static string ProcessString(string input, out bool isValid)
     {
+        isValid = true;
         if (string.IsNullOrEmpty(input))
-            return input;
+            return "";
+                
 
-        if (input.Length % 2 == 0)
+        string invalidSymbols = "";
+        for (int i = 0; i < input.Length; i++)
         {
-            int mid = input.Length / 2;
-            string firstHalf = input[..mid];
-            string secondHalf = input[mid..];
-
-            string reversedFirst = new(firstHalf.Reverse().ToArray());
-            string reversedSecond = new(secondHalf.Reverse().ToArray());
-
-            return reversedFirst + reversedSecond;
+            string lowercaseLettersString = "abcdefghijklmnopqrstuvwxyz";
+            if(!lowercaseLettersString.Contains(input[i]))
+                {
+                    invalidSymbols += input[i];
+                    isValid = false;
+                }
         }
-        else
-        {
-            string reversed = new(input.Reverse().ToArray());
-            return reversed + input;
-        }
+
+        if (!isValid)
+            return $"Некорректный ввод. Неподходящие символы: {invalidSymbols}";
+
+        return Task1.ProcessString(input);
     }
     public static void RunTests()
     {
-        Console.WriteLine("=== Запуск тестов по задаче 1 ===");
+        Console.WriteLine("=== Запуск тестов по задаче 2 ===");
         bool allPassed = true;
         allPassed &= TestCase("abcd", "badc");
         allPassed &= TestCase("abc", "cbaabc");
         allPassed &= TestCase("", "");
         allPassed &= TestCase("a", "aa");
         allPassed &= TestCase("ab", "ab");
-        allPassed &= TestCase("hello!", "leh!ol");
+        allPassed &= TestCase("hello!", "Некорректный ввод. Неподходящие символы: !");
         allPassed &= TestCase("world", "dlrowworld");
 
         Console.WriteLine($"Все тесты пройдены: {(allPassed ? "ДА" : "НЕТ")}");
@@ -49,9 +52,9 @@ public static class Task1
         Console.WriteLine("=== Тесты завершены ===\n");
     }
 
-    private static bool TestCase(string input, string expected)
+    private static bool TestCase(string input, string? expected)
     {
-        string result = ProcessString(input);
+        string result = ProcessString(input, out bool isvalid);
         bool passed = result == expected;
 
 
