@@ -5,22 +5,24 @@ class Program
     static void Main(string[] args)
     {
 
-        Console.WriteLine("Введите номер задачи (или запустите тесты): ");
-        if (!int.TryParse(Console.ReadLine(), out int taskNumber))
+        bool isTesting = false;
+        if (isTesting)
         {
-            Console.WriteLine("Некорректный ввод. Запускаем тесты.");
+            StringProcessTask.RunTests();
             return;
         }
 
+        Console.Write("Введите строку: ");
+        string input = Console.ReadLine() ?? "";
 
-        switch (taskNumber)
-        {
+        string? result = StringProcessTask.ProcessString(input, out string msg);
+
+        if (result != null)
+            Console.WriteLine($"Обработанная строка: {result}");
+        Console.WriteLine(msg);
 
 
-            default:
-                Console.WriteLine("=== Запуск всех тестов ===");
-                break;
-        }
+
     }
 
 
