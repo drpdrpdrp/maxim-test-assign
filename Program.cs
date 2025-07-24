@@ -1,26 +1,35 @@
 ﻿using System;
+using Microsoft.VisualBasic;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
 
-        Console.WriteLine("Введите номер задачи (или запустите тесты): ");
-        if (!int.TryParse(Console.ReadLine(), out int taskNumber))
+        Console.Write("Введите строку: ");
+        string input = Console.ReadLine() ?? "";
+        Console.WriteLine("Введите метод сортировки (1 - QSort, 2 - TreeSort, иначе QSort): ");
+        string sortInput = Console.ReadLine() ?? "";
+        string sortType = "";
+        switch (sortInput)
         {
-            Console.WriteLine("Некорректный ввод. Запускаем тесты.");
-            return;
-        }
-
-
-        switch (taskNumber)
-        {
-
-
+            case "1":
+                sortType = "QSort";
+                break;
+            case "2":
+                sortType = "TreeSort";
+                break;
             default:
-                Console.WriteLine("=== Запуск всех тестов ===");
+                sortType = "QSort";
                 break;
         }
+
+        (string? result, string msg) = await StringProcessTask.ProcessString(input, sortType);
+
+        if (result != null)
+            Console.WriteLine($"Обработанная строка: {result}");
+        Console.WriteLine(msg);
+
     }
 
 
