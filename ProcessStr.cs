@@ -11,6 +11,7 @@ public static class StringProcessTask
     /// Если длина строки нечётная, возвращает перевёрнутую строку + исходную строку.
     /// В строку могут входить только символы латинского алфавита в нижнем регистре.
     /// Возвращает пользователю информацию о том, сколько раз повторялся каждый символ в обработанной строке.
+    /// Выводит самую длинную подстроку начинающуюся и заканчивающуюся на гласную
     /// </summary>
     /// <param name="input">Входная строка для обработки</param>
     /// <returns>Обработанная строка согласно правилам</returns>
@@ -81,6 +82,12 @@ public static class StringProcessTask
             if (curCharCount != 0)
                 message += $"Символов '{curChar}' в обработанной строке: {curCharCount * processedCountEven}\n";
         };
+
+        // Находим строку с началом и концом на гласную (greedy match гарантирует самую длинную строку, с фейлсейфом если гласная одна)
+        string pattern = @"[aeiouy].*[aeiouy]|[aeiouy]";
+        var vowelMatch = Regex.Match(processedString, pattern).ToString();
+        message += $"Самая длинная подстрока начинающаяся и заканчивающаяся на гласную: {vowelMatch}";
+
 
         return processedString;
     }
