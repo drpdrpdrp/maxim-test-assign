@@ -5,22 +5,38 @@ class Program
     static void Main(string[] args)
     {
 
-        Console.WriteLine("Введите номер задачи (или запустите тесты): ");
-        if (!int.TryParse(Console.ReadLine(), out int taskNumber))
+        bool isTesting = false;
+        if (isTesting)
         {
-            Console.WriteLine("Некорректный ввод. Запускаем тесты.");
+            StringProcessTask.RunTests();
             return;
         }
 
 
-        switch (taskNumber)
+        Console.Write("Введите строку: ");
+        string input = Console.ReadLine() ?? "";
+        Console.WriteLine("Введите метод сортировки (1 - QSort, 2 - TreeSort, иначе QSort): ");
+        string sortInput = Console.ReadLine() ?? "";
+        string sortType = "";
+        switch (sortInput)
         {
-
-
+            case "1":
+                sortType = "QSort";
+                break;
+            case "2":
+                sortType = "TreeSort";
+                break;
             default:
-                Console.WriteLine("=== Запуск всех тестов ===");
+                sortType = "QSort";
                 break;
         }
+
+        string? result = StringProcessTask.ProcessString(input, out string msg, sortType);
+
+        if (result != null)
+            Console.WriteLine($"Обработанная строка: {result}");
+        Console.WriteLine(msg);
+
     }
 
 
