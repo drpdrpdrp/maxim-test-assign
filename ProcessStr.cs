@@ -1,24 +1,32 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-//Добавить в программу из «Задания 2» дополнительный функционал. Помимо обработанной строки, необходимо также возвращать пользователю информацию о том, сколько раз повторялся каждый символ в обработанной строке.
-public static class Task3
+public static class StringProcessTask
 {
+
+
     /// <summary>
     /// Обрабатывает строку в зависимости от её длины.
     /// Если длина строки чётная, разделяет её пополам и переворачивает каждую половину.
     /// Если длина строки нечётная, возвращает перевёрнутую строку + исходную строку.
     /// В строку могут входить только символы латинского алфавита в нижнем регистре.
+    /// Возвращает пользователю информацию о том, сколько раз повторялся каждый символ в обработанной строке.
     /// </summary>
     /// <param name="input">Входная строка для обработки</param>
     /// <returns>Обработанная строка согласно правилам</returns>
-    public static string ProcessString(string input, out bool isValid)
+    public static string? ProcessString(string input, out string message)
     {
-        isValid = true;
+
+        bool isValid = true;
+        // Проверка на пустоту строки
         if (string.IsNullOrEmpty(input))
-            return "";
+        {
+            message = "На вход получена пустая строка";
+            return null;
+        }
                 
 
+        // Проверка на разрешенные символы
         string invalidSymbols = "";
         string lowercaseLettersString = "abcdefghijklmnopqrstuvwxyz";
         var lettersCount = lowercaseLettersString.ToDictionary(c => c, c => 0);
@@ -37,20 +45,43 @@ public static class Task3
         }
 
         if (!isValid)
-            return $"Некорректный ввод. Неподходящие символы:  {invalidSymbols}";
+        {
+            message = $"Некорректный ввод. Неподходящие символы: {invalidSymbols}";
+            return null;
+        }
 
 
 
-        string processedString = Task1.ProcessString(input);
-        string validSymbolsCountString = "\n";
+        // Обработка строки
+        string processedString;
+        if (input.Length % 2 == 0)
+        {
+            int mid = input.Length / 2;
+            string firstHalf = input[..mid];
+            string secondHalf = input[mid..];
+
+            string reversedFirst = new(firstHalf.Reverse().ToArray());
+            string reversedSecond = new(secondHalf.Reverse().ToArray());
+
+            processedString = reversedFirst + reversedSecond;
+        }
+        else
+        {
+            string reversed = new(input.Reverse().ToArray());
+            processedString = reversed + input;
+        }
+
+        // Подсчет и вывод кол-ва символов
+        message = "";
         for (int i = 0; i < lettersCount.Count; i++)
         {
             var curChar = lowercaseLettersString[i];
             var curCharCount = lettersCount[curChar];
+            var processedCountEven = input.Length % 2 + 1;
             if (curCharCount != 0)
-                validSymbolsCountString += $"Символов {curChar} в обработанной строке: {curCharCount}\n";
-        }
-        processedString += validSymbolsCountString;
+                message += $"Символов '{curChar}' в обработанной строке: {curCharCount * processedCountEven}\n";
+        };
+
         return processedString;
     }
     public static void RunTests()
@@ -59,22 +90,23 @@ public static class Task3
         bool allPassed = true;
         allPassed &= TestCase("abcd", "badc");
         allPassed &= TestCase("abc", "cbaabc");
-        allPassed &= TestCase("", "");
+        allPassed &= TestCase("", null);
         allPassed &= TestCase("a", "aa");
         allPassed &= TestCase("ab", "ab");
-        allPassed &= TestCase("hello!", "Некорректный ввод. Неподходящие символы: !");
+        allPassed &= TestCase("hello!", null);
         allPassed &= TestCase("world", "dlrowworld");
+        allPassed &= TestCase("abc124", null);
 
         Console.WriteLine($"Все тесты пройдены: {(allPassed ? "ДА" : "НЕТ")}");
 
         Console.WriteLine("=== Тесты завершены ===\n");
     }
 
+    // TODO: Добавить тесты сообщений
     private static bool TestCase(string input, string? expected)
     {
-        string result = ProcessString(input, out bool isvalid);
+        string? result = ProcessString(input, out _);
         bool passed = result == expected;
-
 
         Console.WriteLine($"Вход: '{input}'");
         Console.WriteLine($"  Ожидаемый результат: '{expected}'");
