@@ -15,15 +15,15 @@ public static class StringProcessTask
     /// </summary>
     /// <param name="input">Входная строка для обработки</param>
     /// <returns>Обработанная строка согласно правилам</returns>
-    public static string? ProcessString(string input, out string message, string sortType = "QSort") // NOTE: стоит разделить подзадачи (подсчет, сортировка), возможно использовать инстанс класса
+    public static async Task<(string? processed, string message)> ProcessString(string input, string sortType = "QSort") // NOTE: стоит разделить подзадачи (подсчет, сортировка), возможно использовать инстанс класса
     {
-
+        string message;
         bool isValid = true;
         // Проверка на пустоту строки
         if (string.IsNullOrEmpty(input))
         {
             message = "На вход получена пустая строка";
-            return null;
+            return (null, message);
         }
                 
 
@@ -48,7 +48,7 @@ public static class StringProcessTask
         if (!isValid)
         {
             message = $"Некорректный ввод. Неподходящие символы: '{invalidSymbols}'";
-            return null;
+            return (null, message);
         }
 
 
@@ -105,40 +105,14 @@ public static class StringProcessTask
                 break;
         }
 
-
         message += $"Отсортированная обработанная строка: {new(sortedString)}\n";
 
+        var radnNum = new RandomNumberFetcher();
+        var rnd = await radnNum.GetRandomNumberAsync(0, processedString.Length);
+        var processedStringWithoutOne = processedString.Remove(rnd.Value, 1); 
+        message += $"Обработанная строка с случайно удаленным символом ('{processedString[rnd.Value]}' на {rnd.Value} месте): {processedStringWithoutOne}";
 
-        return processedString;
-    }
-    public static void RunTests()
-    {
-        Console.WriteLine("=== Запуск тестов по задаче 2 ===");
-        bool allPassed = true;
-        allPassed &= TestCase("abcd", "badc");
-        allPassed &= TestCase("abc", "cbaabc");
-        allPassed &= TestCase("", null);
-        allPassed &= TestCase("a", "aa");
-        allPassed &= TestCase("ab", "ab");
-        allPassed &= TestCase("hello!", null);
-        allPassed &= TestCase("world", "dlrowworld");
-        allPassed &= TestCase("abc124", null);
 
-        Console.WriteLine($"Все тесты пройдены: {(allPassed ? "ДА" : "НЕТ")}");
-
-        Console.WriteLine("=== Тесты завершены ===\n");
-    }
-
-    // TODO: Добавить тесты сообщений
-    private static bool TestCase(string input, string? expected)
-    {
-        string? result = ProcessString(input, out _);
-        bool passed = result == expected;
-
-        Console.WriteLine($"Вход: '{input}'");
-        Console.WriteLine($"  Ожидаемый результат: '{expected}'");
-        Console.WriteLine($"  Фактический результат: '{result}'");
-        Console.WriteLine($"  Тест: {(passed ? "ПРОЙДЕН" : "ПРОВАЛЕН")}\n");
-        return passed;
+        return (processedString, message);
     }
 }

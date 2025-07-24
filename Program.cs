@@ -1,17 +1,10 @@
 ﻿using System;
+using Microsoft.VisualBasic;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-
-        bool isTesting = false;
-        if (isTesting)
-        {
-            StringProcessTask.RunTests();
-            return;
-        }
-
 
         Console.Write("Введите строку: ");
         string input = Console.ReadLine() ?? "";
@@ -31,7 +24,7 @@ class Program
                 break;
         }
 
-        string? result = StringProcessTask.ProcessString(input, out string msg, sortType);
+        (string? result, string msg) = await StringProcessTask.ProcessString(input, sortType);
 
         if (result != null)
             Console.WriteLine($"Обработанная строка: {result}");
