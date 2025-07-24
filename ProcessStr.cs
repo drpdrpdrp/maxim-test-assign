@@ -15,7 +15,7 @@ public static class StringProcessTask
     /// </summary>
     /// <param name="input">Входная строка для обработки</param>
     /// <returns>Обработанная строка согласно правилам</returns>
-    public static string? ProcessString(string input, out string message)
+    public static string? ProcessString(string input, out string message, string sortType = "QSort") // NOTE: стоит разделить подзадачи (подсчет, сортировка), возможно использовать инстанс класса
     {
 
         bool isValid = true;
@@ -47,7 +47,7 @@ public static class StringProcessTask
 
         if (!isValid)
         {
-            message = $"Некорректный ввод. Неподходящие символы: {invalidSymbols}";
+            message = $"Некорректный ввод. Неподходящие символы: '{invalidSymbols}'";
             return null;
         }
 
@@ -86,7 +86,27 @@ public static class StringProcessTask
         // Находим строку с началом и концом на гласную (greedy match гарантирует самую длинную строку, с фейлсейфом если гласная одна)
         string pattern = @"[aeiouy].*[aeiouy]|[aeiouy]";
         var vowelMatch = Regex.Match(processedString, pattern).ToString();
-        message += $"Самая длинная подстрока начинающаяся и заканчивающаяся на гласную: {vowelMatch}";
+        message += $"Самая длинная подстрока начинающаяся и заканчивающаяся на гласную: {vowelMatch}\n";
+
+        // NOTE: можно подсчитывать кол-во символов уже отсортированной строки, не нужен будет Dictionary
+        // Сортировка строки
+        var sortedString = processedString.ToArray();
+
+        switch (sortType)
+        {
+            case "QSort":
+                QuickSorter.QuickSort(sortedString);
+                break;
+            case "TreeSort":
+                sortedString = TreeNode<char>.TreeSort(sortedString.ToArray());
+                break;
+            default:
+                QuickSorter.QuickSort(sortedString);
+                break;
+        }
+
+
+        message += $"Отсортированная обработанная строка: {new(sortedString)}\n";
 
 
         return processedString;
